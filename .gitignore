@@ -8,6 +8,9 @@ boardr_server
 ### tests ###
 */test
 
+### uplouds ###
+*/uplouds
+
 ### images ###
 *.png
 *.jpg
