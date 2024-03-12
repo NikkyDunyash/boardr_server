@@ -249,7 +249,14 @@ void BoardCtrl::get_pfp(const HttpRequestPtr &req,
     try
     {
         auto result = fObj.get();
-        resp->setBody(result.front()["pfp"].as<std::string>());
+        if (!result.size()) 
+        {
+            resp->setBody("");
+        }
+        else 
+        {
+            resp->setBody(result.front()["pfp"].as<std::string>());
+        }
     }
     catch (const drogon::orm::DrogonDbException &e)
     {
