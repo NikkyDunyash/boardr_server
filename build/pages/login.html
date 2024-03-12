@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>Authorization</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="box12 center">
+            <h3>Enter your credentials</h3>
+        </div>
+    </div>
+    <div class="wrapper">
+        <div class="box12 center">
+            <form  action="/login" class="left" method="POST">
+                <label for="username">Username:</label>
+                <br>
+                <input type="text" id="username" name="username" placeholder="Enter your username" required>
+                <br><br>
+                <label for="password">Password:</label>
+                <br>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                <br><br>
+                <div class="right"> 
+                    <button type="submit">Submit</button>
+                </div>
+            </form>
+            <br>
+            <div class="right">
+                <a href="/get_reg">
+                    <button>Register</button>
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

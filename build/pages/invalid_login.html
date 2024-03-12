@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>Authorization</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/js/reg.js"></script>
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="row1 center">
+            <h3>You specified invalid credentials</h3>
+            <form action="/">
+                <b>Try to</b>
+                <button type="submit" value="one more time">login</button>
+            </form>
+        </div>
+    </div>
+    <br><br> <hr style="height:2px;border-width:0;background-color: rgb(128, 128, 128);">
+    <div class="wrapper">
+        <div class="box22">
+            <h3 class="center">Register</h3>
+            <br>
+            <div id="reg" class="center"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { loadHtml } from "/js/load.js"
+        loadHtml("/pages/reg_form.html", "reg");
+    </script>
+
+</body>
+
+</html>

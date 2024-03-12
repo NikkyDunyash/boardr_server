@@ -1,0 +1,38 @@
+<div class="wrapper">
+    <div class="row1">
+        Choose ur pfp, max size: 10MB
+        <br><br>
+        <label for="pfp_upload" class="btn">
+            Choose image
+        </label>
+        <br>
+        <input type="file" id="pfp_upload" accept="image/*" onchange="pfpUpload()" style="opacity: 0;" />
+        <div><img id="pfp_preview"  />
+            <div id="imgLoadLog"></div>
+            <br>
+            <div id="cancel_pfp"></div>
+        </div>
+    </div>
+    <div class="box22 left">
+        <label for="username">
+            Username:
+        </label>
+        <br>
+        <input type="text" id="username" name="username" placeholder="Enter your username" maxlength="16" required>
+        <br><br>
+        <label for="password">Password:</label>
+        <br>
+        <input type="password" id="password" name="password" placeholder="Enter your password"
+            onkeyup="checkSamePassword()" required>
+        <br><br>
+        <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm your password"
+            onkeyup="checkSamePassword()" required>
+        <span id="check_message"></span>
+        <br><br>
+
+        <div class="right">
+            <button id="submit" onclick="sendRegForm()">Register</button>
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,37 @@
+{
+    "listeners": [
+        {
+            "address": "0.0.0.0",
+            "port": 5555,
+            "https": true
+        }
+    ],
+    "ssl": {
+        "cert": "../SSL/cert.pem",
+        "key": "../SSL/key.pem"
+    },
+    "app": {
+        "threads_num": 1,
+        "run_as_daemon": false,
+        "enable_session": true,
+        "session_timeout": 0,
+        "document_root": "./",
+        "home_page": "index.html",
+        "client_max_body_size": "15M",
+        "client_max_memory_body_size": "50K"
+    },
+    "db_clients": [
+        {
+            "name": "users",  
+            "rdbms": "postgresql",
+            "host": "127.0.0.1",
+            "port": 5432,
+            "dbname": "boardb",
+            "user": "postgres",
+            "passwd": "password",
+            "is_fast": false,
+            "connection_number": 1,
+            "filename": ""
+        }
+    ]
+}

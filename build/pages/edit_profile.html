@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>Edit profile</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/js/reg.js"></script>
+</head>
+
+<body>
+    <!-- <br> -->
+    <div class="wrapper">
+        <div class="box12 center">
+            <h3>Change ur pfp, max size: 10MB</h3>
+            <br><br>
+            <label for="pfp_upload" class="btn">
+                Choose image
+            </label>
+            <br>
+            <input type="file" id="pfp_upload" accept="image/*" onchange="pfpUpload()" style="opacity: 0;" />
+            <div><img id="pfp_preview" />
+                <div id="imgLoadLog"></div>
+                <br>
+                <div id="cancel_pfp"></div>
+            </div>
+            <div class="right">
+                <button id="submit" onclick="changePfp()">Save</button>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
