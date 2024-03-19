@@ -1,8 +1,11 @@
 import { loadHtml } from "/js/load.js";
 
 
+const DEF_COMMENTS_NUM = 10;
+const MAX_COMMENT_LENGTH = 1024;
+
 class CustomCache {
-    static MAX_CACHE_SIZE = 50;
+    static MAX_CACHE_SIZE = 20;
     static MAX_FREQ = 1000;
     constructor() {
         this.keyVal = new Map();
@@ -33,14 +36,20 @@ class CustomCache {
 
 // WebSocket setup
 function setupWebSocket() {
+    let offset = 0, comp = "g", order = "desc", mode="afterbegin";
+    
+    let loadNewComments = (() => {
+        if (!scroll) {
+            let ids = document.getElementsByClassName("comment-id");
+            if (ids.length) {
+                offset = ids[0].innerText;
+            }
+            getComments(DEF_COMMENTS_NUM, offset, comp, order, mode);
+        } 
+    });
     webSocket = new WebSocket("wss://" + location.host + "/comments");
-    webSocket.addEventListener("open", (event) => {
-        getComments();
-    });
-    webSocket.addEventListener("message", (event) => {
-        getComments();
-        console.log("Message from server: ", event.data);
-    });
+    webSocket.addEventListener("open", loadNewComments);
+    webSocket.addEventListener("message", loadNewComments);
     webSocket.onclose = function () {
         setTimeout(setupWebSocket, 1000);
     };
@@ -48,9 +57,12 @@ function setupWebSocket() {
 
 
 // Events handlers
-function getComments() {
-    let xhr = loadHtml("/get_comments?num=" + num + "&offset=" + offset + "&comp=" + comp + "&order=" + order, "comments");
+// mode = "replace" | "afterbegin" | "beforeend"
+function getComments(num, offset, comp, order, mode = "afterbegin") {
+    let xhr = loadHtml("/get_comments?num=" + num + "&offset=" + offset + "&comp=" + comp + "&order=" + order,
+        "comments", mode);
     xhr.addEventListener("loadend", getPfp);
+    return xhr
 }
 
 
@@ -67,41 +79,67 @@ function getPfp() {
         xhr.send();
         comments[i].getElementsByClassName("pfp")[0].src = "data:image/gif;base64," + xhr.responseText;
         pfpCache.set(username, xhr.responseText);
-        // console.log(pfpCache.keyFreq);
     }
 }
 
 
 function scrollComments(event) {
     let ids = document.getElementsByClassName("comment-id");
+    let offset = 0, comp = "ge", order = "desc", mode = "replace";
+    scroll = true;
+
+    if (!document.getElementById("button_live")) {
+        let buttonLive = document.createElement("button");
+        buttonLive.setAttribute("id", "button_live");
+        buttonLive.className = "btn-scroll btn-top-bottom";
+        buttonLive.appendChild(document.createTextNode("Live"));
+        buttonLive.addEventListener("click", scrollComments);
+        document.getElementById("scroll_buttons").insertAdjacentElement("afterbegin", buttonLive);
+    }
+
     if (event.target.id == "button_down") {
         offset = ids[Math.floor(ids.length / 3)].innerText;
         comp = "le";
-        order = "desc";
     }
     else if (event.target.id == "button_up") {
         offset = ids[Math.floor(2 * ids.length / 3)].innerText;
-        comp = "ge";
         order = "asc";
     }
-    else if (event.target.id == "button_top") {
-        offset = 0;
-        comp = "ge";
-        order = "desc";
+    else if (event.target.id == "button_live") {
+        scroll = false;
+        document.getElementById("button_live").remove();
     }
     else if (event.target.id == "button_bottom") {
-        offset = 0;
-        comp = "ge";
         order = "asc";
     }
-    getComments();
+    getComments(DEF_COMMENTS_NUM, offset, comp, order, mode);
+}
+
+function loadAllComments() {
+    let ids = document.getElementsByClassName("comment-id");
+    let offset = 0;
+    if (ids.length) {
+        offset = ids[ids.length - 1].innerText;
+    }
+    
+    let xhr=getComments("all", offset, "l", "desc", "beforeend");
+    
+    if (!document.getElementById("loader")) {
+        let loader = document.createElement("div");
+        loader.setAttribute("id", "loader");
+        loader.className = "loader";
+        document.getElementById("button_loadall").appendChild(loader);
+    }
+
+    xhr.addEventListener("loadend", (event) => {
+        document.getElementById("loader").remove();
+    });
 }
 
 
 function postComment() {
     let inputComment = document.getElementById("input_comment").value;
-    console.log(inputComment);
-    if (inputComment.length < 1 || inputComment.length > 256) {
+    if (inputComment.length < 1 || inputComment.length > MAX_COMMENT_LENGTH) {
         return;
     }
     let xhr = new XMLHttpRequest();
@@ -121,10 +159,7 @@ function postComment() {
 
 
 
-let num = 10;
-let offset = 0;
-let comp = "ge";
-let order = "desc";
+let scroll = false;
 
 let pfpCache = new CustomCache();
 
@@ -134,7 +169,8 @@ setupWebSocket();
 document.getElementById("button_down").addEventListener("click", scrollComments);
 document.getElementById("button_up").addEventListener("click", scrollComments);
 document.getElementById("button_bottom").addEventListener("click", scrollComments);
-document.getElementById("button_top").addEventListener("click", scrollComments);
+
+document.getElementById("button_loadall").addEventListener("click", loadAllComments);
 
 document.getElementById("input_comment").addEventListener("keyup", (event) => {
     if ((event.keyCode == 10 || event.keyCode == 13)
@@ -143,7 +179,11 @@ document.getElementById("input_comment").addEventListener("keyup", (event) => {
     }
 });
 
+document.getElementById("input_comment").setAttribute("placeholder",
+    `No more than ${MAX_COMMENT_LENGTH} bytes, enjoy...`);
+
 document.getElementById("button_post").addEventListener("click", postComment);
+
 
 
 

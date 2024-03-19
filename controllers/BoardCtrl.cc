@@ -3,7 +3,10 @@
 #include <iomanip>
 
 #define BOARD_ELEM_COMMENT "comment"
-#define USERS_DBCL_NAME "users"
+#define DBCL_NAME "boardb"
+
+const std::string DOC_ROOT_DIR = "../front/";
+const std::string PAGES_DIR = DOC_ROOT_DIR + "pages/";
 
 void BoardCtrl::access(const HttpRequestPtr &req,
                        std::function<void(const HttpResponsePtr &)> &&callback)
@@ -19,7 +22,7 @@ void BoardCtrl::access(const HttpRequestPtr &req,
     else
     {
         resp = HttpResponse::newHttpResponse();
-        resp->setBody(file_to_string("pages/login.html"));
+        resp->setBody(file_to_string(PAGES_DIR + "login.html"));
     }
     callback(resp);
 }
@@ -34,8 +37,8 @@ void BoardCtrl::login(const HttpRequestPtr &req,
     std::string password = req->getParameter(SESSION_PASSWORD);
 
     bool found = false;
-    auto usersDbClientPtr = drogon::app().getDbClient(USERS_DBCL_NAME);
-    auto fObj = usersDbClientPtr->execSqlAsyncFuture("select * from users where username=$1", username);
+    auto DbClientPtr = drogon::app().getDbClient(DBCL_NAME);
+    auto fObj = DbClientPtr->execSqlAsyncFuture("select * from users where username=$1", username);
     try
     {
         auto result = fObj.get();
@@ -70,7 +73,7 @@ void BoardCtrl::get_reg(const HttpRequestPtr &req,
 {
     LOG_DEBUG << endl;
     HttpResponsePtr resp = HttpResponse::newHttpResponse();
-    resp->setBody(file_to_string("pages/reg.html"));
+    resp->setBody(file_to_string(PAGES_DIR + "reg.html"));
     callback(resp);
 }
 
@@ -95,8 +98,8 @@ void BoardCtrl::reg(const HttpRequestPtr &req,
     }
 
     bool found = false;
-    auto usersDbClientPtr = drogon::app().getDbClient(USERS_DBCL_NAME);
-    auto fObj = usersDbClientPtr->execSqlAsyncFuture("select * from users where username=$1", username);
+    auto DbClientPtr = drogon::app().getDbClient(DBCL_NAME);
+    auto fObj = DbClientPtr->execSqlAsyncFuture("select * from users where username=$1", username);
 
     try
     {
@@ -115,8 +118,8 @@ void BoardCtrl::reg(const HttpRequestPtr &req,
     }
     else
     {
-        auto fObj = usersDbClientPtr->execSqlAsyncFuture("insert into users (username, password, pfp) values ($1, $2, $3);",
-                                                         username, sha256(password), pfp);
+        auto fObj = DbClientPtr->execSqlAsyncFuture("insert into users (username, password, pfp) values ($1, $2, $3);",
+                                                    username, sha256(password), pfp);
         try
         {
             auto result = fObj.get();
@@ -142,7 +145,7 @@ HttpResponsePtr BoardCtrl::deny_login()
 {
     HttpResponsePtr resp = HttpResponse::newHttpResponse();
     resp->setStatusCode(k401Unauthorized);
-    resp->setBody(file_to_string("pages/invalid_login.html"));
+    resp->setBody(file_to_string(PAGES_DIR + "invalid_login.html"));
     return resp;
 }
 
@@ -164,36 +167,26 @@ void BoardCtrl::index(const HttpRequestPtr &req,
               << "req->body(): " << req->body() << endl;
 
     HttpResponsePtr resp = HttpResponse::newHttpResponse();
-    resp->setBody(file_to_string("index.html"));
+    resp->setBody(file_to_string(DOC_ROOT_DIR + "index.html"));
     callback(resp);
 }
 
 void BoardCtrl::get_comments(const HttpRequestPtr &req,
                              std::function<void(const HttpResponsePtr &)> &&callback,
-                             int num, int offset, const std::string &comp, const std::string &order)
+                             const std::string &num, const std::string &offset,
+                             const std::string &comp, const std::string &order)
 {
     LOG_DEBUG << endl
               << "req->body(): " << req->body() << endl;
     HttpResponsePtr resp = HttpResponse::newHttpResponse();
     std::string curr_username = req->session()->get<std::string>(SESSION_USERNAME);
-    std::string str_offset = std::to_string(offset);
-    std::string str_num = std::to_string(num);
-    std::string str_comp = comp;
+    std::map<std::string, std::string> comp_map = {{"l", "<"}, {"le", "<="}, {"ge", ">="}, {"g", ">"}};
     std::string comments;
 
-    if (str_comp == "le")
-    {
-        str_comp = "<=";
-    }
-    else if (str_comp == "ge")
-    {
-        str_comp = ">=";
-    }
+    auto DbClientPtr = drogon::app().getDbClient(DBCL_NAME);
 
-    auto usersDbClientPtr = drogon::app().getDbClient(USERS_DBCL_NAME);
-
-    auto fObj = usersDbClientPtr->execSqlAsyncFuture("select * from comments where id " + str_comp + str_offset +
-                                                     " order by id " + order + " limit $1;", str_num);
+    auto fObj = DbClientPtr->execSqlAsyncFuture("select * from comments where id " + comp_map.at(comp) + offset +
+                                                " order by id " + order + " limit " + num + ";");
 
     try
     {
@@ -243,17 +236,17 @@ void BoardCtrl::get_pfp(const HttpRequestPtr &req,
     LOG_DEBUG << username << endl;
 
     HttpResponsePtr resp = HttpResponse::newHttpResponse();
-    auto usersDbClientPtr = drogon::app().getDbClient(USERS_DBCL_NAME);
-    auto fObj = usersDbClientPtr->execSqlAsyncFuture("select pfp from users where username=$1",
-                                                     username);
+    auto DbClientPtr = drogon::app().getDbClient(DBCL_NAME);
+    auto fObj = DbClientPtr->execSqlAsyncFuture("select pfp from users where username=$1",
+                                                username);
     try
     {
         auto result = fObj.get();
-        if (!result.size()) 
+        if (!result.size())
         {
             resp->setBody("");
         }
-        else 
+        else
         {
             resp->setBody(result.front()["pfp"].as<std::string>());
         }
@@ -267,10 +260,10 @@ void BoardCtrl::get_pfp(const HttpRequestPtr &req,
 }
 
 void BoardCtrl::edit_profile(const HttpRequestPtr &req,
-                           std::function<void(const HttpResponsePtr &)> &&callback)
+                             std::function<void(const HttpResponsePtr &)> &&callback)
 {
     HttpResponsePtr resp = HttpResponse::newHttpResponse();
-    resp->setBody(file_to_string("pages/edit_profile.html"));
+    resp->setBody(file_to_string(PAGES_DIR + "edit_profile.html"));
     callback(resp);
 }
 
@@ -283,14 +276,14 @@ void BoardCtrl::change_pfp(const HttpRequestPtr &req,
     HttpResponsePtr resp = HttpResponse::newHttpResponse();
     std::string username = req->session()->get<std::string>(SESSION_USERNAME);
     std::string pfp = parser.getParameter<std::string>("pfp");
-    LOG_DEBUG << username<<", pfp sz in B"<<pfp.length() << endl;
-    auto usersDbClientPtr = drogon::app().getDbClient(USERS_DBCL_NAME);
-    auto fObj = usersDbClientPtr->execSqlAsyncFuture("update users set pfp = $1 where username=$2", 
-                                                     pfp, username);
+    LOG_DEBUG << username << ", pfp sz in B" << pfp.length() << endl;
+    auto DbClientPtr = drogon::app().getDbClient(DBCL_NAME);
+    auto fObj = DbClientPtr->execSqlAsyncFuture("update users set pfp = $1 where username=$2",
+                                                pfp, username);
     try
     {
         auto result = fObj.get();
-        LOG_DEBUG<<"rows affected: "<<result.affectedRows()<<endl;
+        LOG_DEBUG << "rows affected: " << result.affectedRows() << endl;
     }
     catch (const drogon::orm::DrogonDbException &e)
     {
@@ -312,9 +305,9 @@ void BoardCtrl::post_comment(const HttpRequestPtr &req,
     std::time_t time = std::time(nullptr);
     std::stringstream timestamp;
     timestamp << std::put_time(std::gmtime(&time), "%Y-%m-%d %H:%M:%S %Z");
-    auto usersDbClientPtr = drogon::app().getDbClient(USERS_DBCL_NAME);
-    auto fObj = usersDbClientPtr->execSqlAsyncFuture("insert into comments (username, date_time, comment) values ($1, $2, $3);",
-                                                     username, timestamp.str(), comment);
+    auto DbClientPtr = drogon::app().getDbClient(DBCL_NAME);
+    auto fObj = DbClientPtr->execSqlAsyncFuture("insert into comments (username, date_time, comment) values ($1, $2, $3);",
+                                                username, timestamp.str(), comment);
 
     try
     {

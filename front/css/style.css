@@ -1,8 +1,8 @@
-body { 
+body {
     color: rgb(255, 247, 170);
     background-color: rgb(28, 28, 94);
     font-size: 1rem;
-    font-family:'Courier New';
+    font-family: 'Courier New';
     margin: 0px 0px 10px 0px;
     /* text-align: center; */
 }
@@ -20,18 +20,18 @@ input {
     width: 15rem;
     margin: 0rem;
     font-size: 1rem;
-    font-family:'Courier New';
+    font-family: 'Courier New';
 }
 
 button {
     font-size: 1rem;
-    font-family:'Courier New';
+    font-family: 'Courier New';
     font-weight: bold;
 }
 
 .btn {
     font-size: 1rem;
-    font-family:'Courier New';
+    font-family: 'Courier New';
     font-weight: bold;
     padding: 5px;
     border: 1px solid rgb(109, 109, 109);
@@ -50,6 +50,57 @@ button {
     margin-right: 2rem;
 }
 
+.btn-scroll {
+    background-color: rgba(0, 0, 0, 0);
+    border-color: rgba(0, 0, 0, 0);
+    color: rgb(0, 185, 185);
+    font-size: 2rem;
+    font-weight: bolder;
+    text-shadow: 0 0 0.1rem black,
+        0 0 0.2rem black,
+        0 0 0.3rem black,
+        0 0 0.5rem black;
+    margin-bottom: 1rem;
+}
+
+
+.btn-scroll:active {
+    color: rgb(0, 255, 255);
+    text-shadow: 0 0 0.5rem rgb(0, 255, 255);
+}
+
+.btn-top-bottom {
+    font-size: 1.5rem;
+}
+
+.btn-loadall {
+    font-size: 1.5rem;
+    color: rgb(185, 0, 0);
+}
+
+.btn-loadall:active {
+    color: rgb(255, 0, 0);
+    text-shadow: 0 0 0.5rem rgb(255, 0, 0);
+}
+
+.loader {
+    display:inline-block;
+    border: 0.1rem solid rgb(200, 200, 200);
+    border-top: 0.1rem solid rgb(185, 0, 0);
+    border-radius: 50%;
+    width: 1.5rem;
+    height: 1.5rem;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
 
 .logo {
     width: 20%;
@@ -72,16 +123,16 @@ button {
 }
 
 .username {
-    display:inline;
+    display: inline;
     color: rgb(236, 75, 75);
-    text-shadow: 
+    text-shadow:
         0rem 0rem 0.1rem black;
 }
 
 .curr-username {
-    display:inline;
+    display: inline;
     color: rgb(0, 255, 0);
-    text-shadow: 
+    text-shadow:
         0rem 0rem 0.1rem black,
         0rem 0rem 0.2rem rgb(0, 255, 0);
 }
@@ -109,6 +160,8 @@ button {
     }
 }
 
+
+
 .input-comment {
     width: auto;
     margin-top: 3rem;
@@ -119,29 +172,6 @@ button {
     height: 10rem;
 }
 
-.btn-scroll {
-    background-color: rgba(0, 0, 0, 0);
-    border-color: rgba(0, 0, 0, 0);
-    color: rgb(0, 185, 185);
-    font-size: 2rem;
-    font-weight: bolder;
-    text-shadow: 0 0 0.1rem black,
-                 0 0 0.2rem black,
-                 0 0 0.3rem black,
-                 0 0 0.5rem black;
-    margin-bottom: 1rem;
-}
-
-
-.btn-scroll:active {
-    color: rgb(0, 255, 255);
-    text-shadow: 0 0 0.5rem rgb(0, 255, 255);
-}
-
-.btn-top-bottom {
-    font-size: 1.5rem;
-}
-
 .wrapper {
     display: grid;
     grid-template-columns: 1fr auto 1fr;
@@ -150,7 +180,7 @@ button {
     row-gap: 1rem;
 }
 
-.row1{
+.row1 {
     grid-row: 1;
     grid-column: 1/4;
     margin-bottom: 1rem;
@@ -170,7 +200,7 @@ button {
     grid-row: 1/2;
     grid-column: 3/4;
 }
-    
+
 .box22 {
     grid-row: 2 / 3;
     grid-column: 2 / 3;
@@ -207,12 +237,13 @@ button {
 
 .right {
     text-align: right;
-    
+
 }
 
 .top {
     text-align: top;
 }
+
 .center {
     text-align: center;
 }

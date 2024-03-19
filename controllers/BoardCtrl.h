@@ -36,7 +36,8 @@ public:
              std::function<void(const HttpResponsePtr &)> &&callback);
   void get_comments(const HttpRequestPtr &req,
                     std::function<void(const HttpResponsePtr &)> &&callback,
-                    int num, int offset, const std::string &comp, const std::string &order);
+                    const std::string &num, const std::string &offset, 
+                    const std::string &comp, const std::string &order);
   void get_pfp(const HttpRequestPtr &req,
                std::function<void(const HttpResponsePtr &)> &&callback,
                const std::string &username);

@@ -15,16 +15,17 @@
         "run_as_daemon": false,
         "enable_session": true,
         "session_timeout": 0,
-        "document_root": "./",
+        "document_root": "../front/",
         "home_page": "index.html",
         "client_max_body_size": "15M",
         "client_max_memory_body_size": "50K"
     },
     "db_clients": [
         {
-            "name": "users",  
+            "name": "boardb",  
             "rdbms": "postgresql",
-            "host": "127.0.0.1",
+            // "host": "localhost",
+            "host": "boardb",
             "port": 5432,
             "dbname": "boardb",
             "user": "postgres",

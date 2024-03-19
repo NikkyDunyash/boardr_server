@@ -1,23 +1,17 @@
 # Created by https://www.toptal.com/developers/gitignore/api/intellij+all,visualstudio,visualstudiocode,cmake,c,c++
 # Edit at https://www.toptal.com/developers/gitignore?templates=intellij+all,visualstudio,visualstudiocode,cmake,c,c++
 
+### notes ###
+*.txt
 
-### executable ###
-boardr_server
+### build ###
+build/*
 
 ### tests ###
-*/test
+*/test/*
 
 ### uplouds ###
-*/uplouds
-
-### images ###
-*.png
-*.jpg
-*.jpeg
-*.gif
-*.ico
-*/images
+*/uploads/*
 
 ### SSL ###
 *.pem
@@ -112,6 +106,7 @@ compile_commands.json
 CTestTestfile.cmake
 _deps
 CMakeUserPresets.json
+.cmake
 
 ### CMake Patch ###
 # External projects

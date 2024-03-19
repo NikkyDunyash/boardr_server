@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+
+  boardr_server:
+    build: .
+    image: mattcookich/boardr_server:1.2
+    container_name: boardr_server
+    ports:
+      - "5555:5555"
+    depends_on: 
+      - db
+
+  db:
+    image: postgres:15.6
+    container_name: boardb
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "password"
+    volumes:
+      - "./init.sql:/docker-entrypoint-initdb.d/init.sql"
