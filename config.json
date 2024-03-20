@@ -11,7 +11,7 @@
         "key": "../SSL/key.pem"
     },
     "app": {
-        "threads_num": 1,
+        "threads_num": 0,
         "run_as_daemon": false,
         "enable_session": true,
         "session_timeout": 0,
