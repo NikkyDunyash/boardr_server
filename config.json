@@ -30,7 +30,7 @@
             "dbname": "boardb",
             "user": "postgres",
             "passwd": "password",
-            "is_fast": false,
+            "is_fast": true,
             "connection_number": 1,
             "filename": ""
         }

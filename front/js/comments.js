@@ -59,10 +59,18 @@ function setupWebSocket() {
 // Events handlers
 // mode = "replace" | "afterbegin" | "beforeend"
 function getComments(num, offset, comp, order, mode = "afterbegin") {
+    if (!document.getElementById("loader")) {
+        let loader = document.createElement("div");
+        loader.setAttribute("id", "loader");
+        loader.className = "loader";
+        document.getElementById("comments").insertAdjacentElement("afterbegin", loader);
+    }
     let xhr = loadHtml("/get_comments?num=" + num + "&offset=" + offset + "&comp=" + comp + "&order=" + order,
         "comments", mode);
+    xhr.addEventListener("loadend", (event) => {
+        document.getElementById("loader").remove();
+    });
     xhr.addEventListener("loadend", getPfp);
-    return xhr
 }
 
 
@@ -115,25 +123,14 @@ function scrollComments(event) {
     getComments(DEF_COMMENTS_NUM, offset, comp, order, mode);
 }
 
+
 function loadAllComments() {
     let ids = document.getElementsByClassName("comment-id");
     let offset = 0;
     if (ids.length) {
         offset = ids[ids.length - 1].innerText;
     }
-    
-    let xhr=getComments("all", offset, "l", "desc", "beforeend");
-    
-    if (!document.getElementById("loader")) {
-        let loader = document.createElement("div");
-        loader.setAttribute("id", "loader");
-        loader.className = "loader";
-        document.getElementById("button_loadall").appendChild(loader);
-    }
-
-    xhr.addEventListener("loadend", (event) => {
-        document.getElementById("loader").remove();
-    });
+    getComments("all", offset, "l", "desc", "beforeend");
 }
 
 
