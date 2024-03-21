@@ -7,15 +7,6 @@ body {
     /* text-align: center; */
 }
 
-
-/* iframe {
-    position: relative;
-    border: none; 
-    margin: 0; 
-    padding: 0; 
-    overflow: hidden;
-} */
-
 input {
     width: 15rem;
     margin: 0rem;
@@ -62,7 +53,6 @@ button {
         0 0 0.5rem black;
     margin-bottom: 1rem;
 }
-
 
 .btn-scroll:active {
     color: rgb(0, 255, 255);

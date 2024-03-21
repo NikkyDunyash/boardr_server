@@ -175,10 +175,8 @@ document.getElementById("input_comment").addEventListener("keyup", (event) => {
         postComment();
     }
 });
-
 document.getElementById("input_comment").setAttribute("placeholder",
     `No more than ${MAX_COMMENT_LENGTH} bytes, enjoy...`);
-
 document.getElementById("button_post").addEventListener("click", postComment);
 
 

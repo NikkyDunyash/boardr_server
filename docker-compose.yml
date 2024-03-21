@@ -4,7 +4,7 @@ services:
 
   boardr_server:
     build: .
-    image: mattcookich/boardr_server:1.2
+    image: boardr_server:1.2
     container_name: boardr_server
     ports:
       - "5555:5555"
